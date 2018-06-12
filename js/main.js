@@ -1,3 +1,16 @@
+//Register Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/js/sw.js').then(function(registration) {
+      // Registration was successful
+      console.log('ServiceWorker registration successful with scope: ', registration.scope);
+    }, function(err) {
+      // registration failed :(
+      console.log('ServiceWorker registration failed: ', err);
+    });
+  });
+}
+
 let restaurants,
   neighborhoods,
   cuisines
@@ -37,6 +50,7 @@ fillNeighborhoodsHTML = (neighborhoods = self.neighborhoods) => {
     option.value = neighborhood;
     select.append(option);
   });
+  select.setAttribute('aria-label','Neighborhood selection')
 }
 
 /**
@@ -51,6 +65,7 @@ fetchCuisines = () => {
       fillCuisinesHTML();
     }
   });
+  select.setAttribute('aria-label','Cuisine selection')
 }
 
 /**
@@ -141,6 +156,7 @@ createRestaurantHTML = (restaurant) => {
   const image = document.createElement('img');
   image.className = 'restaurant-img';
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
+  image.setAttribute('alt', 'Photo of restaurant');
   li.append(image);
 
   const name = document.createElement('h1');
