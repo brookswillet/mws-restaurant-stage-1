@@ -1,4 +1,4 @@
-//Register Service Worker
+//Register Service Worker - copied from developer.google.com
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
     navigator.serviceWorker.register('/js/sw.js').then(function(registration) {
