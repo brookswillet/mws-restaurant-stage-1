@@ -1,7 +1,7 @@
 //Register Service Worker - copied from developer.google.com
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/js/sw.js').then(function(registration) {
+    navigator.serviceWorker.register('/sw.js').then(function(registration) {
       // Registration was successful
       console.log('ServiceWorker registration successful with scope: ', registration.scope);
     }, function(err) {
@@ -65,7 +65,6 @@ fetchCuisines = () => {
       fillCuisinesHTML();
     }
   });
-  select.setAttribute('aria-label','Cuisine selection')
 }
 
 /**
@@ -80,6 +79,7 @@ fillCuisinesHTML = (cuisines = self.cuisines) => {
     option.value = cuisine;
     select.append(option);
   });
+  select.setAttribute('aria-label','Cuisine selection');
 }
 
 /**
@@ -156,7 +156,7 @@ createRestaurantHTML = (restaurant) => {
   const image = document.createElement('img');
   image.className = 'restaurant-img';
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
-  image.setAttribute('alt', 'Photo of restaurant');
+  image.setAttribute('alt', 'Photo of ' + restaurant.name);
   li.append(image);
 
   const name = document.createElement('h1');
