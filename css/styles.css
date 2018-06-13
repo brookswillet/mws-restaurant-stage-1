@@ -15,6 +15,9 @@ content{
 		padding: 0;
 		margin: 0;
 	}
+	label{
+		display: inline-flex;
+	}
 	.inside header {
 	  position: relative;
 	  top: 0;
@@ -209,7 +212,8 @@ content{
 	  width: 100%;
 	}
 	#restaurant-hours{
-		display: inline-block;
+		display: inline-grid;
+		vertical-align: bottom;
 	}
 }
 
@@ -314,7 +318,8 @@ content{
 	  width: 100%;
 	}
 	#restaurant-hours{
-		display: inline-block;
+		display: inline-grid;
+		vertical-align: bottom;
 	}
 
 }
@@ -395,7 +400,7 @@ nav h1 a {
 
 /* Add a color to all links inside the list */
 #breadcrumb li a {
-    color: #024c8d;
+    color: #024C8D;
     text-decoration: none;
 }
 
@@ -517,5 +522,7 @@ nav h1 a {
   margin: 0 0 10px;
 }
 #restaurant-hours td {
+	display: inline-grid;
+	vertical-align: bottom;
   color: #666;
 }
