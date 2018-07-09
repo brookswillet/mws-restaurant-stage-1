@@ -14,10 +14,10 @@ if ('serviceWorker' in navigator) {
 let restaurants,
   neighborhoods,
   cuisines
+  /**
 var map
 var markers = []
 
-/**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
  */
 document.addEventListener('DOMContentLoaded', (event) => {
@@ -129,9 +129,8 @@ resetRestaurants = (restaurants) => {
   self.restaurants = [];
   const ul = document.getElementById('restaurants-list');
   ul.innerHTML = '';
-
   // Remove all map markers
-  self.markers.forEach(m => m.setMap(null));
+  if(self.markers){self.markers.forEach(m => m.setMap(null));}
   self.markers = [];
   self.restaurants = restaurants;
 }
@@ -156,7 +155,12 @@ createRestaurantHTML = (restaurant) => {
   const image = document.createElement('img');
   image.className = 'restaurant-img';
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
-  image.setAttribute('alt', 'Photo of ' + restaurant.name);
+  if(restaurant.photograph){
+    image.setAttribute('alt', 'Photo of ' + restaurant.name);
+  }else {
+    image.setAttribute('alt', 'No photo yet for ' + restaurant.name);
+  }
+
   li.append(image);
 
   const name = document.createElement('h1');

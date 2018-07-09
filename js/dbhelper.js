@@ -8,14 +8,67 @@ class DBHelper {
    * Change this to restaurants.json file location on your server.
    */
   static get DATABASE_URL() {
-    const port = 8080 // Change this to your server port
-    return `http://localhost:${port}/data/restaurants.json`;
+    const port = 1337 // Change this to your server port
+    return `http://localhost:${port}/restaurants`;
   }
 
   /**
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {
+    const DB_NAME = 'restaurantDB';
+    const DB_VERSION = 1; // Use a long long for this value (don't use a float)
+    const DB_STORE_NAME = 'restaurants';
+
+    //if the databases is already open, don't reopen it
+    if(!req){
+      var db;
+      console.log(`Opening  ${DB_NAME} version ${DB_VERSION}...`);
+      var req = window.indexedDB.open(DB_NAME, DB_VERSION);
+      req.onupgradeneeded = function (event) {
+        db = req.result;
+        console.log(`${DB_NAME} version ${DB_VERSION} opened!`);
+        console.log(`Upgrading ${DB_NAME}`);
+        var objectStore = db.createObjectStore(DB_STORE_NAME,{keyPath:'id'});
+        console.log(`${DB_STORE_NAME} created`);
+        var nameIndex = objectStore.createIndex("by_name", "name", {unique: true});
+        var neighborhoodIndex = objectStore.createIndex("by_neighborhood", "neighborhood");
+        var cuisineIndex = objectStore.createIndex("by_cuisine", "cuisine_type");
+        objectStore.transaction.oncomplete = function(event){
+          fetch(DBHelper.DATABASE_URL).then(response => {
+            return response.json();
+            }).then(myJson => {
+                var tx = db.transaction(DB_STORE_NAME, 'readwrite');
+                var store = tx.objectStore('restaurants');
+                myJson.forEach(function(restaurant){
+                  store.put(restaurant);
+                });
+                const json = myJson;
+                const restaurants = myJson;
+                callback(null, restaurants);
+              }).catch(function(){
+                const error = (`Request failed.`);
+                callback(error, null);
+                });
+          }
+        };
+      req.onsuccess = function (evt) {
+        db = req.result;
+        console.log(`${DB_NAME} version ${DB_VERSION} opened!`);
+        var rq = db.transaction('restaurants').objectStore('restaurants').getAll();
+        rq.onsuccess = function(reqSuccess){
+          const restaurants = rq.result;
+          callback(null,restaurants);
+        }
+      };
+      req.onerror = function (evt) {
+        console.error(`Error opening ${DB_NAME}:`, evt.target.errorCode);
+      };
+
+    }
+
+
+/*
     let xhr = new XMLHttpRequest();
     xhr.open('GET', DBHelper.DATABASE_URL);
     xhr.onload = () => {
@@ -29,6 +82,7 @@ class DBHelper {
       }
     };
     xhr.send();
+    */
   }
 
   /**
@@ -150,7 +204,12 @@ class DBHelper {
    * Restaurant image URL.
    */
   static imageUrlForRestaurant(restaurant) {
-    return (`/img/${restaurant.photograph}`);
+      if (restaurant.photograph) {
+      return (`/img/${restaurant.photograph}.jpg`);
+    }else {
+      return('/img/daniel-jensen-440210-unsplash_800x533.jpg');
+    }
+
   }
 
   /**
